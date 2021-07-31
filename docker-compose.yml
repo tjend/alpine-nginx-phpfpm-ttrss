@@ -1,0 +1,20 @@
+version: '3.6'
+
+services:
+  ttrss:
+    build: .
+    environment:
+      - 'TTRSS_DB_HOST=ttrss-db'
+      - 'TTRSS_DB_NAME=ttrss'
+      - 'TTRSS_DB_PASS=ttrss'
+      - 'TTRSS_DB_USER=ttrss'
+      - 'TTRSS_SELF_URL_PATH=http://localhost:8080/'
+      - 'TTRSS_SINGLE_USER_MODE=true'
+    ports:
+      - 8080:80
+  ttrss-db:
+    environment:
+      - 'POSTGRES_DB=ttrss'
+      - 'POSTGRES_PASSWORD=ttrss'
+      - 'POSTGRES_USER=ttrss'
+    image: postgres:alpine

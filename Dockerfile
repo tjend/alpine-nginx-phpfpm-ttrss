@@ -1,0 +1,29 @@
+# use latest nginx-phpfpm image
+FROM tjend/alpine-nginx-phpfpm:latest
+
+RUN \
+  # download ttrss to /var/www/localhost/htdocs
+  curl -S https://git.tt-rss.org/fox/tt-rss/archive/master.tar.gz | \
+    tar zx -C /var/www/localhost/htdocs --strip-component 1 && \
+  # chown and make ttrss directories writable
+  DIRS="cache feed-icons lock" && \
+  for DIR in ${DIRS}; do \
+    chown -R www-data:www-data /var/www/localhost/htdocs/${DIR}; \
+    find /var/www/localhost/htdocs/${DIR} -type f -exec chmod 664 {} \;; \
+    find /var/www/localhost/htdocs/${DIR} -type d -exec chmod 775 {} \;; \
+  done
+
+# add files from our git repo
+ADD rootfs /
+
+# set phpfpm opcache validate timestamps to off for performance reasons
+ENV PHPFPM_OPCACHE_VALIDATE_TIMESTAMPS off
+
+# set ttrss default environment variables
+ENV TTRSS_DB_HOST=ttrss-db
+ENV TTRSS_DB_NAME=ttrss
+ENV TTRSS_DB_PASS=ttrss
+ENV TTRSS_DB_PORT=5432
+ENV TTRSS_DB_USER=ttrss
+ENV TTRSS_PHP_EXECUTABLE=/usr/bin/php8
+ENV TTRSS_SELF_URL_PATH=http://localhost/

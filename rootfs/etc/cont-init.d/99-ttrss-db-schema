@@ -1,0 +1,21 @@
+#!/usr/bin/with-contenv sh
+# use with-contenv to access env vars
+
+# wait up to 2 minutes for ttrss-db to be available
+for LOOP in $(seq 1 24); do
+  s6-setuidgid www-data php8 /var/www/localhost/htdocs/update.php --user-list > /dev/null
+  if [ $? -eq 0 ]; then
+    # success - break out of for loop
+    break
+  fi
+
+  echo "Waiting until ${TTRSS_DB_HOST} is ready..."
+  sleep 5
+done
+
+# run ttrss schema update
+s6-setuidgid www-data php8 /var/www/localhost/htdocs/update.php --update-schema=force-yes
+if [ $? -ne 0 ]; then
+  echo "!!! ERROR !!!! Failed to update ttrss database schema"
+  exit 1
+fi
