@@ -3,7 +3,7 @@
 
 # wait up to 2 minutes for ttrss-db to be available
 for LOOP in $(seq 1 24); do
-  s6-setuidgid www-data php8 /var/www/localhost/htdocs/update.php --user-list > /dev/null
+  s6-setuidgid www-data ${TTRSS_PHP_EXECUTABLE} /var/www/localhost/htdocs/update.php --user-list > /dev/null
   if [ $? -eq 0 ]; then
     # success - break out of for loop
     break
@@ -14,7 +14,7 @@ for LOOP in $(seq 1 24); do
 done
 
 # run ttrss schema update
-s6-setuidgid www-data php8 /var/www/localhost/htdocs/update.php --update-schema=force-yes
+s6-setuidgid www-data ${TTRSS_PHP_EXECUTABLE} /var/www/localhost/htdocs/update.php --update-schema=force-yes
 if [ $? -ne 0 ]; then
   echo "!!! ERROR !!!! Failed to update ttrss database schema"
   exit 1

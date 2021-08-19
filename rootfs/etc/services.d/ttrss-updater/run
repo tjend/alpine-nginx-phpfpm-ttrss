@@ -2,4 +2,4 @@
 # use with-contenv to access env vars
 
 # run ttrss update daemon
-s6-setuidgid www-data php8 /var/www/localhost/htdocs/update_daemon2.php
+s6-setuidgid www-data ${TTRSS_PHP_EXECUTABLE} /var/www/localhost/htdocs/update_daemon2.php
