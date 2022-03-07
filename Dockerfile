@@ -5,6 +5,8 @@ RUN \
   # download ttrss to /var/www/localhost/htdocs
   curl -S https://git-gitea.tt-rss.org/fox/tt-rss/archive/master.tar.gz | \
     tar zx -C /var/www/localhost/htdocs --strip-component 1 && \
+  # write version file
+  echo "$(date -r /var/www/localhost/htdocs/README.md +%Y%m%d%H%M%S%z)-tjend/alpine-nginx-phpfpm-ttrss" > /var/www/localhost/htdocs/version_static.txt && \
   # chown and make ttrss directories writable
   DIRS="cache feed-icons lock" && \
   for DIR in ${DIRS}; do \
