@@ -3,7 +3,7 @@ FROM tjend/alpine-nginx-phpfpm:latest
 
 RUN \
   # download ttrss to /var/www/localhost/htdocs
-  curl -S https://git.tt-rss.org/fox/tt-rss/archive/master.tar.gz | \
+  curl -S https://git-gitea.tt-rss.org/fox/tt-rss/archive/master.tar.gz | \
     tar zx -C /var/www/localhost/htdocs --strip-component 1 && \
   # chown and make ttrss directories writable
   DIRS="cache feed-icons lock" && \
