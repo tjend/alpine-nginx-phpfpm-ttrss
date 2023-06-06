@@ -20,15 +20,15 @@ fi
 # URL_PATH_PREFIX=path/to/ttrss
 # SYMLINK_DIRNAME=path/to
 SYMLINK_DIRNAME="$(dirname ${URL_PATH_PREFIX})"
-mkdir -p "/var/www/localhost/htdocs/${SYMLINK_DIRNAME}"
+mkdir -p "/var/www/${SYMLINK_DIRNAME}"
 if [ $? -ne 0 ]; then
-  echo "!!! ERROR !!! Could not create directory /var/www/localhost/htdocs/${SYMLINK_DIRNAME}"
+  echo "!!! ERROR !!! Could not create directory /var/www/${SYMLINK_DIRNAME}"
   exit 1
 fi
 
 # create symlink to base ttrss directory
-ln -sf /var/www/localhost/htdocs "/var/www/localhost/htdocs/${URL_PATH_PREFIX}"
+ln -sf /var/www "/var/www/${URL_PATH_PREFIX}"
 if [ $? -ne 0 ]; then
-  echo "!!! ERROR !!! Could not create symlink /var/www/localhost/htdocs/${URL_PATH_PREFIX}"
+  echo "!!! ERROR !!! Could not create symlink /var/www/${URL_PATH_PREFIX}"
   exit 1
 fi

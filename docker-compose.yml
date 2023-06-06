@@ -1,4 +1,4 @@
-version: '3.6'
+version: '3.8'
 
 services:
   ttrss:
@@ -10,6 +10,7 @@ services:
       - 'TTRSS_DB_USER=ttrss'
       - 'TTRSS_SELF_URL_PATH=http://localhost:8080/'
       - 'TTRSS_SINGLE_USER_MODE=true'
+    image: localhost/alpine-nginx-phpfpm-ttrss
     ports:
       - 8080:80
   ttrss-db:
