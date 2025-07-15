@@ -3,9 +3,11 @@ ARG BASE_IMAGE=docker.io/tjend/alpine-nginx-phpfpm:latest
 FROM ${BASE_IMAGE}
 
 RUN \
+  apk --no-cache add git && \
+  # remove /var/www
+  rm -rf /var/www && \
   # download ttrss to /var/www
-  curl -S https://gitlab.tt-rss.org/tt-rss/tt-rss/-/archive/master/tt-rss-master.tar.gz | \
-    tar zx -C /var/www --strip-component 1 && \
+  git clone --depth 1 https://git.tt-rss.org/fox/tt-rss.git /var/www && \
   # write version file
   echo "$(date -r /var/www/README.md +%Y%m%d%H%M%S%z)-tjend/alpine-nginx-phpfpm-ttrss" > /var/www/version_static.txt && \
   # chown and make ttrss directories writable
@@ -14,7 +16,8 @@ RUN \
     chown -R www-data:www-data /var/www/${DIR}; \
     find /var/www/${DIR} -type f -exec chmod 664 {} \;; \
     find /var/www/${DIR} -type d -exec chmod 775 {} \;; \
-  done
+  done && \
+  apk del git
 
 # add files from our git repo
 ADD rootfs /
