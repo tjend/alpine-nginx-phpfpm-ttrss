@@ -2,22 +2,24 @@
 ARG BASE_IMAGE=docker.io/tjend/alpine-nginx-phpfpm:latest
 FROM ${BASE_IMAGE}
 
-RUN \
-  apk --no-cache add git && \
-  # remove /var/www
-  rm -rf /var/www && \
+RUN <<EOF
+  # remove /var/www contents
+  rm -rf /var/www/*
+
   # download ttrss to /var/www
-  git clone --depth 1 https://git.tt-rss.org/fox/tt-rss.git /var/www && \
+  wget -O - https://github.com/tt-rss/tt-rss/archive/refs/heads/main.tar.gz | tar zx -C /var/www --strip-component 1
+
   # write version file
-  echo "$(date -r /var/www/README.md +%Y%m%d%H%M%S%z)-tjend/alpine-nginx-phpfpm-ttrss" > /var/www/version_static.txt && \
+  echo "$(date -r /var/www/README.md +%Y%m%d%H%M%S%z)-tjend/alpine-nginx-phpfpm-ttrss" > /var/www/version_static.txt
+
   # chown and make ttrss directories writable
-  DIRS="cache feed-icons lock" && \
-  for DIR in ${DIRS}; do \
-    chown -R www-data:www-data /var/www/${DIR}; \
-    find /var/www/${DIR} -type f -exec chmod 664 {} \;; \
-    find /var/www/${DIR} -type d -exec chmod 775 {} \;; \
-  done && \
-  apk del git
+  DIRS="cache feed-icons lock"
+  for DIR in ${DIRS}; do
+    chown -R www-data:www-data /var/www/${DIR}
+    find /var/www/${DIR} -type f -exec chmod 664 {} \;
+    find /var/www/${DIR} -type d -exec chmod 775 {} \;
+  done
+EOF
 
 # add files from our git repo
 ADD rootfs /
